@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  flask_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./media:/media
+    networks:
+      - flask_network
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf  # Configuração do Nginx
+      - ./media:/media  # Pasta de vídeos
+    ports:
+      - "80:80"  # Mapeia a porta 80 do host para a porta 80 do contêiner
+    networks:
+      - flask_network
+
+networks:
+  flask_network:
+    driver: bridge
